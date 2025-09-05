@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  run-terraform:
+    name: Run terraform
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: us-east-2
+        role-to-assume: ''
+
+    - name: Setup terraform
+      uses: hashcorp/setup-terraform@v3
+
+    - name: Run terraform init
+      run: terrafom init
+
+    - name: Run terraform format
+      run: terrafom fmt -check
+
+    - name: Run terraform plan
+      run: terrafom plan
+
+    - name: Run terraform apply
+      run: terrafom apply -auto-approve
