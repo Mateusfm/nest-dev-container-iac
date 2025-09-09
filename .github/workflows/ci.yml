@@ -30,13 +30,13 @@ jobs:
       uses: hashicorp/setup-terraform@v3
 
     - name: Run terraform init
-      run: terrafom init
+      run: terraform init
 
     - name: Run terraform format
-      run: terrafom fmt -check
+      run: terraform fmt -check
 
     - name: Run terraform plan
-      run: terrafom plan
+      run: terraform plan
 
     - name: Run terraform apply
-      run: terrafom apply -auto-approve
+      run: terraform apply -auto-approve
