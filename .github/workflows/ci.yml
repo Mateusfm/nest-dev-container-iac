@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
 
   run-terraform:
@@ -20,7 +24,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: us-east-2
-        role-to-assume: ''
+        role-to-assume: arn:aws:iam::476422658806:role/tf-role
 
     - name: Setup terraform
       uses: hashcorp/setup-terraform@v3

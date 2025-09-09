@@ -53,8 +53,8 @@ resource "aws_iam_role" "ecr-role" {
           Effect   = "Allow"
         },
         {
-          Sid      = "Statement2",
-          Action   = [
+          Sid = "Statement2",
+          Action = [
             "iam:PassRole",
             "iam:CreateServiceLinkedRole"
           ],
@@ -62,7 +62,7 @@ resource "aws_iam_role" "ecr-role" {
           Effect   = "Allow"
         },
         {
-          Sid      = "Statement3",
+          Sid = "Statement3",
           Effect : "Allow",
           Action : [
             "ecr:GetAuthorizationToken",
