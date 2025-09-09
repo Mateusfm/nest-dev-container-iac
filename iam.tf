@@ -16,21 +16,21 @@ resource "aws_iam_role" "ecr-role" {
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
   assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+    Version : "2012-10-17",
+    Statement : [
       {
-        "Effect" : "Allow",
-        "Action" : "sts:AssumeRoleWithWebIdentity",
-        "Principal" : {
-          "Federated" : "arn:aws:iam::476422658806:oidc-provider/token.actions.githubusercontent.com"
+        Effect : "Allow",
+        Action : "sts:AssumeRoleWithWebIdentity",
+        Principal : {
+          Federated : "arn:aws:iam::476422658806:oidc-provider/token.actions.githubusercontent.com"
         },
-        "Condition" : {
-          "StringEquals" : {
+        Condition : {
+          StringEquals : {
             "token.actions.githubusercontent.com:aud" : [
               "sts.amazonaws.com"
             ]
           },
-          "StringLike" : {
+          StringLike : {
             "token.actions.githubusercontent.com:sub" : [
               "repo:Mateusfm/NestDevContainer:ref:refs/heads/main"
             ]
@@ -44,11 +44,27 @@ resource "aws_iam_role" "ecr-role" {
     name = "ecr-app-permission"
 
     policy = jsonencode({
-      "Version" : "2012-10-17",
-      "Statement" : [
+      Version : "2012-10-17",
+      Statement : [
         {
-          "Effect" : "Allow",
-          "Action" : [
+          Sid      = "Statement1",
+          Action   = "apprunner:*",
+          Resource = "*",
+          Effect   = "Allow"
+        },
+        {
+          Sid      = "Statement2",
+          Action   = [
+            "iam:PassRole",
+            "iam:CreateServiceLinkedRole"
+          ],
+          Resource = "*",
+          Effect   = "Allow"
+        },
+        {
+          Sid      = "Statement3",
+          Effect : "Allow",
+          Action : [
             "ecr:GetAuthorizationToken",
             "ecr:BatchCheckLayerAvailability",
             "ecr:GetDownloadUrlForLayer",
@@ -66,11 +82,65 @@ resource "aws_iam_role" "ecr-role" {
             "ecr:CompleteLayerUpload",
             "ecr:PutImage"
           ],
-          "Resource" : "*"
+          Resource : "*"
         }
       ]
     })
   }
+
+  tags = {
+    Iac = "True"
+  }
+}
+
+resource "aws_iam_role" "tf-role" {
+  name = "tf-role"
+
+  assume_role_policy = jsonencode({
+    Statement : [
+      {
+        Effect : "Allow",
+        Action : "sts:AssumeRoleWithWebIdentity",
+        Principal : {
+          Federated : "arn:aws:iam::476422658806:oidc-provider/token.actions.githubusercontent.com"
+        },
+        Condition : {
+          StringEquals : {
+            "token.actions.githubusercontent.com:aud" : [
+              "sts.amazonaws.com"
+            ]
+          },
+          StringLike : {
+            "token.actions.githubusercontent.com:sub" : [
+              "repo:Mateusfm/nest-dev-container-iac:ref:refs/heads/main"
+            ]
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "app-runner-role" {
+  name = "app-runner-role"
+
+  assume_role_policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [
+      {
+        Sid : "Statement1",
+        Effect : "Allow",
+        Principal : {
+          Service : "build.apprunner.amazonaws.com"
+        },
+        Action : "sts:AssumeRole"
+      }
+    ]
+  })
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  ]
 
   tags = {
     Iac = "True"
