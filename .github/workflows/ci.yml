@@ -27,7 +27,7 @@ jobs:
         role-to-assume: arn:aws:iam::476422658806:role/tf-role
 
     - name: Setup terraform
-      uses: hashcorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v3
 
     - name: Run terraform init
       run: terrafom init
