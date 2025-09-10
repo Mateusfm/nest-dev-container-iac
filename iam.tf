@@ -119,6 +119,28 @@ resource "aws_iam_role" "tf-role" {
       }
     ]
   })
+
+  inline_policy {
+    name = "tf-permission"
+
+    policy = jsonencode({
+      Version : "2012-10-17",
+      Statement : [
+        {
+          Sid      = "Statement1",
+          Action   = "ecr:*",
+          Resource = "*",
+          Effect   = "Allow"
+        },
+        {
+          Sid      = "Statement2",
+          Action   = "iam:*"
+          Resource = "*",
+          Effect   = "Allow"
+        }
+      ]
+    })
+  }
 }
 
 resource "aws_iam_role" "app-runner-role" {
