@@ -137,6 +137,12 @@ resource "aws_iam_role" "tf-role" {
           Action   = "iam:*"
           Resource = "*",
           Effect   = "Allow"
+        },
+        {
+          Sid      = "Statement3",
+          Action   = "s3:*"
+          Resource = "*",
+          Effect   = "Allow"
         }
       ]
     })

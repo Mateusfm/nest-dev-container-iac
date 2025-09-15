@@ -5,6 +5,13 @@ terraform {
       version = "6.8.0"
     }
   }
+
+  backend "s3" {
+    bucket = "nest-iac-state"
+    key    = "state/terraform.tfstate"
+    region = "us-east-2"
+  }
+
 }
 
 provider "aws" {
